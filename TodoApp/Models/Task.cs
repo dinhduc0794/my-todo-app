@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TodoApp.Models;
 
-public class Task
+public class Task : BaseModel
 {
     [Key]
     public int TaskId { get; set; }
@@ -14,6 +14,6 @@ public class Task
     public bool IsCompleted { get; set; } = false;
     public DateTime? DueDate { get; set; }
     public int? CategoryId { get; set; }
-    public Category? Category { get; set; }
+    [ForeignKey("CategoryId")] public Category? Category { get; set; }
     public Priority? Priority { get; set; }
 }
