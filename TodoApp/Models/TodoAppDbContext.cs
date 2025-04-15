@@ -5,7 +5,6 @@ namespace TodoApp.Models;
 
 public class TodoAppDbContext : DbContext
 {
-    
     public DbSet<Task> tasks { get; set; }
     public DbSet<Category> categories { get; set; }
     

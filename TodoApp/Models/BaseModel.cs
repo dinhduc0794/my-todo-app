@@ -2,7 +2,7 @@
 
 namespace TodoApp.Models;
 
-public class BaseModel
+public abstract class BaseModel
 {
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
