@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TodoApp.Models;
 
@@ -11,9 +12,11 @@ using TodoApp.Models;
 namespace TodoApp.Migrations
 {
     [DbContext(typeof(TodoAppDbContext))]
-    partial class TodoAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250415093920_short-desc")]
+    partial class shortdesc
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,6 @@ namespace TodoApp.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsActive")
@@ -70,9 +72,6 @@ namespace TodoApp.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime?>("DueDate")
                         .HasColumnType("datetime(6)");
 
@@ -87,6 +86,9 @@ namespace TodoApp.Migrations
 
                     b.Property<int?>("Priority")
                         .HasColumnType("int");
+
+                    b.Property<string>("ShortDesc")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Title")
                         .IsRequired()

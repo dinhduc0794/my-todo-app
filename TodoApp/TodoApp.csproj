@@ -25,4 +25,9 @@
       <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Views\Category\Index.cshtml" />
+      <AdditionalFiles Include="Views\Category\Privacy.cshtml" />
+    </ItemGroup>
+
 </Project>

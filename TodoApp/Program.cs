@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using TodoApp.Models;
+using TodoApp.Repositories;
+using TodoApp.Repositories.Interfaces;
+using TodoApp.Services;
 
 namespace TodoApp;
 
@@ -52,9 +55,14 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         CreateDatabase();
-        
+    
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+        builder.Services.AddDbContext<TodoAppDbContext>();
+        builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+        builder.Services.AddScoped<ITaskService, TaskService>();
+        builder.Services.AddScoped<ICategoryService, CategoryService>();
 
         var app = builder.Build();
 
@@ -62,7 +70,6 @@ public class Program
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
 

@@ -1,9 +1,20 @@
-﻿namespace TodoApp.Enums;
+﻿using System.ComponentModel.DataAnnotations;
 
-public enum Priority
+namespace TodoApp.Enums
 {
-    Low = 0,
-    Medium = 1,
-    High = 2,
-    Critical = 3
+    public enum Priority
+    {
+        [Display(Name = "Low priority")]
+        Low = 0,
+
+        [Display(Name = "Medium priority")]
+        Medium = 1,
+
+        [Display(Name = "High priority")]
+        High = 2,
+
+        [Display(Name = "Critical")]
+        Critical = 3
+    }
 }
+

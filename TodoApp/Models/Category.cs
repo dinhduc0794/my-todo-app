@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TodoApp.Models;
 
-public class Category
+public class Category : BaseModel
 {
     [Key]
     public int CategoryId { get; set; }
