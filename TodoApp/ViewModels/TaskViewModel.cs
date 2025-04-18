@@ -5,6 +5,9 @@ namespace TodoApp.ViewModels;
 public class TaskViewModel : Task
 {
     public CategoryViewModel Category { get; set; }
+    public int RecordCount { get; set; }
+    public List<CategoryViewModel> AllCategories { get; set; }
+    public bool IsEdit { get; set; }
 }
 
 

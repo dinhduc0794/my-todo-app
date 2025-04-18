@@ -11,7 +11,10 @@ public class CategoryRepository : ICategoryRepository
     {
         _context = context;
     }
-
+    
+// SELECT c.*
+// FROM categories c
+// WHERE c.IsDeleted = 0
     public List<Category> GetAllCategories()
     {
         return _context.categories
@@ -19,18 +22,26 @@ public class CategoryRepository : ICategoryRepository
             .ToList();
     }
 
+    // SELECT c.*
+// FROM categories c
+// WHERE c.CategoryId = @id AND c.IsDeleted = 0
     public Category GetCategoryById(int id)
     {
         return _context.categories
             .FirstOrDefault(c => c.CategoryId == id && !c.IsDeleted);
     }
 
+    // INSERT INTO categories (Name, Description, CreatedAt, UpdatedAt, IsActive, IsDeleted)
+// VALUES (@Name, @Description, @CreatedAt, @UpdatedAt, @IsActive, @IsDeleted)
     public void AddCategory(Category category)
     {
         _context.categories.Add(category);
         _context.SaveChanges();
     }
 
+    // UPDATE categories
+// SET Name = @Name, Description = @Description, UpdatedAt = @UpdatedAt
+// WHERE CategoryId = @CategoryId AND IsDeleted = 0
     public bool UpdateCategory(Category category)
     {
         var existingCategory = _context.categories.Find(category.CategoryId);
@@ -54,6 +65,9 @@ public class CategoryRepository : ICategoryRepository
         }
     }
 
+    // UPDATE categories
+// SET IsDeleted = 1, UpdatedAt = @UpdatedAt
+// WHERE CategoryId = @id AND IsDeleted = 0
     public bool DeleteCategory(int id)
     {
         var category = _context.categories.Find(id);

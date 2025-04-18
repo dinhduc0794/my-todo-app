@@ -12,33 +12,21 @@ public class CategoryController : Controller
     {
         _categoryService = categoryService;
     }
-
-// GET: Category
+    
     public IActionResult Index()
-    {
-        var categories = _categoryService.GetAllCategories();
-        return View(categories);
+    {   
+        var tasks = _categoryService.GetAllCategories();
+        CategoryViewModel viewModel = new CategoryViewModel();
+        return View(viewModel);
     }
-
-// GET: Category/Details/5
-    public IActionResult Details(int id)
-    {
-        var category = _categoryService.GetCategoryById(id);
-        if (category == null)
-        {
-            return NotFound();
-        }
-
-        return View(category);
-    }
-
-// GET: Category/Create
+    
+    // GET: Category/Create
     public IActionResult Create()
     {
         return View();
     }
 
-// POST: Category/Create
+    // POST: Category/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Create(CategoryViewModel categoryViewModel)
@@ -46,13 +34,13 @@ public class CategoryController : Controller
         if (ModelState.IsValid)
         {
             _categoryService.CreateCategory(categoryViewModel);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), "Home");
         }
 
         return View(categoryViewModel);
     }
 
-// GET: Category/Edit/5
+    // GET: Category/Edit/5
     public IActionResult Edit(int id)
     {
         var category = _categoryService.GetCategoryById(id);
@@ -64,11 +52,10 @@ public class CategoryController : Controller
         return View(category);
     }
 
-// POST: Category/Edit/5
+    // POST: Category/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(int id, CategoryViewModel
-        categoryViewModel)
+    public IActionResult Edit(int id, CategoryViewModel categoryViewModel)
     {
         if (id != categoryViewModel.CategoryId)
         {
@@ -83,35 +70,39 @@ public class CategoryController : Controller
                 return NotFound();
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), "Home");
         }
 
         return View(categoryViewModel);
     }
 
-// GET: Category/Delete/5
+    // POST: Category/Delete
+    [HttpPost]
     public IActionResult Delete(int id)
     {
-        var category = _categoryService.GetCategoryById(id);
-        if (category == null)
+        var deleted = _categoryService.DeleteCategory(id);
+        return Json(new
         {
-            return NotFound();
-        }
-
-        return View(category);
+            success = deleted,
+            message = deleted ? "Category deleted successfully" : "Category not found"
+        });
     }
 
-// POST: Category/Delete/5
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public IActionResult DeleteConfirmed(int id)
+    // POST: Category/GetAll
+    [HttpPost]
+    public IActionResult GetAll(string keyword = "")
     {
-        var deleted = _categoryService.DeleteCategory(id);
-        if (!deleted)
-        {
-            return NotFound();
-        }
+        var categories = _categoryService.GetAllCategories()
+            .Where(c => string.IsNullOrEmpty(keyword) || c.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+            .Select(c => new
+            {
+                CategoryId = c.CategoryId,
+                Name = c.Name,
+                Description = c.Description,
+                CreatedAt = c.CreatedAt
+            })
+            .ToList();
 
-        return RedirectToAction(nameof(Index));
+        return Json(new { data = categories });
     }
 }

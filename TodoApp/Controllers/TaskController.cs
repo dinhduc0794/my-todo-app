@@ -14,12 +14,21 @@ public class TaskController : Controller
         _taskService = taskService;
         _categoryService = categoryService;
     }
-
-// GET: Task
+    
     public IActionResult Index()
+    {   
+        var tasks = _taskService.GetAllTasks();
+        TaskViewModel viewModel = new TaskViewModel();
+        viewModel.RecordCount = tasks.Count;
+        return View(viewModel);
+    }
+    
+// GET: Task
+    [HttpGet]
+    public IActionResult GetAllTasks()
     {
         var tasks = _taskService.GetAllTasks();
-        return View(tasks);
+        return Json(new { data = tasks });
     }
 
 // GET: Task/Details/5
@@ -30,48 +39,50 @@ public class TaskController : Controller
         {
             return NotFound();
         }
-
+    
         return View(task);
-    }
+    }   
 
 // GET: Task/Create
-    public IActionResult Create()
-    {
-        ViewBag.Categories = _categoryService.GetAllCategories();
-        return View();
+    public IActionResult Form(int id)
+    {      
+        TaskViewModel viewModel = new TaskViewModel();
+        viewModel.IsEdit = id > 0;
+        if (viewModel.IsEdit)
+        {
+            var task = _taskService.GetTaskById(id);
+            if (task == null)
+            {
+                return NotFound();
+            }
+            viewModel = task;
+        }
+        viewModel.AllCategories = _categoryService.GetAllCategories();
+        return View(viewModel);
     }
-
+    
 // POST: Task/Create
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public IActionResult Create(TaskViewModel taskViewModel)
     {
-        if (ModelState.IsValid)
-        {
-            _taskService.CreateTask(taskViewModel);
+        TaskViewModel createdTask = new TaskViewModel();
+       
+        createdTask = _taskService.CreateTask(taskViewModel);
+        
+        if (createdTask != null) {
             return RedirectToAction(nameof(Index));
         }
-
-        ViewBag.Categories = _categoryService.GetAllCategories();
-        return View(taskViewModel);
-    }
-
-// GET: Task/Edit/5
-    public IActionResult Edit(int id)
-    {
-        var task = _taskService.GetTaskById(id);
-        if (task == null)
+        else
         {
-            return NotFound();
+            ModelState.AddModelError("", "Failed to create task.");
         }
 
-        ViewBag.Categories = _categoryService.GetAllCategories();
-        return View(task);
+        return Json(new { data = createdTask });
     }
+    
 
 // POST: Task/Edit/5
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public IActionResult Edit(int id, TaskViewModel taskViewModel)
     {
         if (id != taskViewModel.TaskId)
@@ -106,9 +117,8 @@ public class TaskController : Controller
         return View(task);
     }
 
-// POST: Task/Delete/5
+// POST: Task/Delete/5  
     [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
     public IActionResult DeleteConfirmed(int id)
     {
         var deleted = _taskService.DeleteTask(id);
