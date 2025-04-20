@@ -15,46 +15,63 @@ public class CategoryController : Controller
     
     public IActionResult Index()
     {   
-        var tasks = _categoryService.GetAllCategories();
         CategoryViewModel viewModel = new CategoryViewModel();
         return View(viewModel);
     }
     
-    // GET: Category/Create
-    public IActionResult Create()
+    [HttpGet]
+    public IActionResult GetAllTasks()
     {
-        return View();
+        List<CategoryViewModel> tasks = _categoryService.GetAllCategories();
+        return Json(new { data = tasks });
     }
-
-    // POST: Category/Create
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult Create(CategoryViewModel categoryViewModel)
+    
+    public IActionResult Details(int id)
     {
-        if (ModelState.IsValid)
-        {
-            _categoryService.CreateCategory(categoryViewModel);
-            return RedirectToAction(nameof(Index), "Home");
-        }
-
-        return View(categoryViewModel);
-    }
-
-    // GET: Category/Edit/5
-    public IActionResult Edit(int id)
-    {
-        var category = _categoryService.GetCategoryById(id);
+        CategoryViewModel category = _categoryService.GetCategoryById(id);
         if (category == null)
         {
             return NotFound();
         }
-
+    
         return View(category);
+    }   
+    
+    // GET: Task/Create
+    public IActionResult Form(int id)
+    {      
+        CategoryViewModel viewModel = new CategoryViewModel();
+        viewModel.IsEdit = id > 0;
+        if (viewModel.IsEdit)
+        {
+            CategoryViewModel categoryViewModel = _categoryService.GetCategoryById(id);
+            if (categoryViewModel == null)
+            {
+                return NotFound();
+            }
+            viewModel = categoryViewModel;
+        }
+        return View(viewModel);
+    }
+    
+// POST: Task/Create
+    [HttpPost]
+    public IActionResult Create(CategoryViewModel categoryViewModel)
+    {
+        CategoryViewModel createdCategory = _categoryService.CreateCategory(categoryViewModel);
+        
+        if (createdCategory != null) {
+            return RedirectToAction(nameof(Index));
+        }
+        else
+        {
+            ModelState.AddModelError("", "Failed to create category.");
+        }
+        return Json(new { success = false, message = "Failed to create category." });
     }
 
-    // POST: Category/Edit/5
+    
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public IActionResult Edit(int id, CategoryViewModel categoryViewModel)
     {
         if (id != categoryViewModel.CategoryId)
@@ -70,22 +87,36 @@ public class CategoryController : Controller
                 return NotFound();
             }
 
-            return RedirectToAction(nameof(Index), "Home");
+            return RedirectToAction(nameof(Index));
         }
 
         return View(categoryViewModel);
     }
 
-    // POST: Category/Delete
-    [HttpPost]
+
+    // GET: Category/Delete/5
     public IActionResult Delete(int id)
     {
-        var deleted = _categoryService.DeleteCategory(id);
-        return Json(new
+        CategoryViewModel category = _categoryService.GetCategoryById(id);
+        if (category == null)
         {
-            success = deleted,
-            message = deleted ? "Category deleted successfully" : "Category not found"
-        });
+            return NotFound();
+        }
+
+        return View(category);
+    }
+    
+    // POST: Category/Delete/5  
+    [HttpPost, ActionName("Delete")]
+    public IActionResult DeleteConfirmed(int id)
+    {
+        var deleted = _categoryService.DeleteCategory(id);
+        if (!deleted)
+        {
+            return NotFound();
+        }
+
+        return RedirectToAction(nameof(Index));
     }
 
     // POST: Category/GetAll

@@ -17,7 +17,7 @@ public class TaskController : Controller
     
     public IActionResult Index()
     {   
-        var tasks = _taskService.GetAllTasks();
+        List<TaskViewModel> tasks = _taskService.GetAllTasks();
         TaskViewModel viewModel = new TaskViewModel();
         viewModel.RecordCount = tasks.Count;
         return View(viewModel);
@@ -27,14 +27,14 @@ public class TaskController : Controller
     [HttpGet]
     public IActionResult GetAllTasks()
     {
-        var tasks = _taskService.GetAllTasks();
+        List<TaskViewModel> tasks = _taskService.GetAllTasks();
         return Json(new { data = tasks });
     }
 
 // GET: Task/Details/5
     public IActionResult Details(int id)
     {
-        var task = _taskService.GetTaskById(id);
+        TaskViewModel task = _taskService.GetTaskById(id);
         if (task == null)
         {
             return NotFound();
@@ -76,8 +76,7 @@ public class TaskController : Controller
         {
             ModelState.AddModelError("", "Failed to create task.");
         }
-
-        return Json(new { data = createdTask });
+        return Json(new { success = false, message = "Failed to create category." });
     }
     
 
