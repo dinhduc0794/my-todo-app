@@ -20,7 +20,7 @@ public class CategoryController : Controller
     }
     
     [HttpGet]
-    public IActionResult GetAllTasks()
+    public IActionResult GetAllCategories()
     {
         List<CategoryViewModel> tasks = _categoryService.GetAllCategories();
         return Json(new { data = tasks });
