@@ -1,6 +1,8 @@
 ﻿@model TodoApp.ViewModels.TaskViewModel
 @{
     var isEdit = Model.IsEdit;
+    ViewData["Title"] = isEdit == false ? "Thêm danh mục" : "Chỉnh sửa danh mục";
+    var action = isEdit == false ? "Create" : "Edit";
 }
 
 <div class="main-content">

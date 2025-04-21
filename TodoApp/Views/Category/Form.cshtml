@@ -1,8 +1,8 @@
 ﻿@model TodoApp.ViewModels.CategoryViewModel
 @{
-    ViewData["Title"] = Model.CategoryId == 0 ? "Thêm danh mục" : "Chỉnh sửa danh mục";
-    var action = Model.CategoryId == 0 ? "Create" : "Edit";
     var isEdit = Model.CategoryId != 0;
+    ViewData["Title"] = isEdit == false ? "Thêm danh mục" : "Chỉnh sửa danh mục";
+    var action = isEdit == false ? "Create" : "Edit";
 }
 
 <div class="main-content">

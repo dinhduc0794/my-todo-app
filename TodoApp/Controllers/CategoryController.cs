@@ -119,21 +119,21 @@ public class CategoryController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // POST: Category/GetAll
-    [HttpPost]
-    public IActionResult GetAll(string keyword = "")
-    {
-        var categories = _categoryService.GetAllCategories()
-            .Where(c => string.IsNullOrEmpty(keyword) || c.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase))
-            .Select(c => new
-            {
-                CategoryId = c.CategoryId,
-                Name = c.Name,
-                Description = c.Description,
-                CreatedAt = c.CreatedAt
-            })
-            .ToList();
-
-        return Json(new { data = categories });
-    }
+    // // POST: Category/GetAll
+    // [HttpPost]
+    // public IActionResult GetAll(string keyword = "")
+    // {
+    //     var categories = _categoryService.GetAllCategories()
+    //         .Where(c => string.IsNullOrEmpty(keyword) || c.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+    //         .Select(c => new
+    //         {
+    //             CategoryId = c.CategoryId,
+    //             Name = c.Name,
+    //             Description = c.Description,
+    //             CreatedAt = c.CreatedAt
+    //         })
+    //         .ToList();
+    //
+    //     return Json(new { data = categories });
+    // }
 }
