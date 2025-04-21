@@ -1,8 +1,8 @@
 ﻿@model TodoApp.ViewModels.CategoryViewModel
 @{
     var isEdit = Model.CategoryId != 0;
-    ViewData["Title"] = isEdit == false ? "Thêm danh mục" : "Chỉnh sửa danh mục";
-    var action = isEdit == false ? "Create" : "Edit";
+    ViewData["Title"] = isEdit ? "Chỉnh sửa danh mục" : "Thêm danh mục";
+    var action = isEdit ? "Edit" : "Create";
 }
 
 <div class="main-content">
@@ -31,6 +31,7 @@
                         @if (isEdit)
                         {
                             <input type="hidden" asp-for="CategoryId" />
+                            @* <input type="hidden" name="id" value="@Model.CategoryId" /> *@
                         }
                         <div class="form-group">
                             <label class="col-xs-3">Tên danh mục</label>
@@ -56,9 +57,11 @@
                         }
                         <div class="form-group" style="margin-top: 48px;">
                             <label class="col-xs-3"></label>
-                            <div class="col-xs-9">
-                                <button type="submit" class="btn btn-primary">@(isEdit ? "Lưu thay đổi" : "Thêm danh mục")</button>
-                                <a asp-action="Index" class="btn btn-warning">Hủy thao tác</a>
+                            <div class="col-xs-9">                                  
+                                <button type="submit" class="btn btn-primary">
+                                    @(isEdit ? "Lưu thay đổi" : "Thêm danh mục")
+                                </button>
+                                <a asp-action="Index" class="btn btn-warning">Quay lại</a>
                             </div>
                         </div>
                     </form>
@@ -67,7 +70,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

@@ -8,6 +8,7 @@ public class TaskViewModel : Task
     public int RecordCount { get; set; }
     public List<CategoryViewModel> AllCategories { get; set; }
     public bool IsEdit { get; set; }
+    public bool IsSuccess { get; set; }
 }
 
 

@@ -27,7 +27,6 @@
 
     <ItemGroup>
       <AdditionalFiles Include="Views\Category\Index.cshtml" />
-      <AdditionalFiles Include="Views\Category\Privacy.cshtml" />
     </ItemGroup>
 
 </Project>

@@ -14,114 +14,116 @@ public class TaskController : Controller
         _taskService = taskService;
         _categoryService = categoryService;
     }
-    
+
     public IActionResult Index()
-    {   
-        List<TaskViewModel> tasks = _taskService.GetAllTasks();
-        TaskViewModel viewModel = new TaskViewModel();
-        viewModel.RecordCount = tasks.Count;
+    {
+        var result = _taskService.GetAllTasks();
+        if (!result.IsSuccess)
+        {
+            ViewBag.ErrorMessage = result.Message;
+            return View();
+        }
+
+        var viewModel = new TaskViewModel
+        {
+            RecordCount = result.Data?.Count ?? 0
+        };
+
         return View(viewModel);
     }
-    
-// GET: Task
+
     [HttpGet]
     public IActionResult GetAllTasks()
     {
-        List<TaskViewModel> tasks = _taskService.GetAllTasks();
-        return Json(new { data = tasks });
+        var result = _taskService.GetAllTasks();
+        if (!result.IsSuccess)
+        {
+            return Json(new { success = false, message = result.Message });
+        }
+        return Json(new { data = result.Data });
     }
 
-// GET: Task/Details/5
     public IActionResult Details(int id)
     {
-        TaskViewModel task = _taskService.GetTaskById(id);
-        if (task == null)
+        var result = _taskService.GetTaskById(id);
+        if (!result.IsSuccess || result.Data == null)
         {
             return NotFound();
         }
-    
-        return View(task);
-    }   
 
-// GET: Task/Create
+        return View(result.Data);
+    }
+
     public IActionResult Form(int id)
-    {      
-        TaskViewModel viewModel = new TaskViewModel();
-        viewModel.IsEdit = id > 0;
+    {
+        TaskViewModel viewModel = new TaskViewModel { IsEdit = id > 0 };
+
         if (viewModel.IsEdit)
         {
-            var task = _taskService.GetTaskById(id);
-            if (task == null)
+            var result = _taskService.GetTaskById(id);
+            if (!result.IsSuccess || result.Data == null)
             {
                 return NotFound();
             }
-            viewModel = task;
+            viewModel = result.Data;
         }
+
         viewModel.AllCategories = _categoryService.GetAllCategories();
         return View(viewModel);
     }
-    
-// POST: Task/Create
+
     [HttpPost]
     public IActionResult Create(TaskViewModel taskViewModel)
     {
-        TaskViewModel createdTask = new TaskViewModel();
-       
-        createdTask = _taskService.CreateTask(taskViewModel);
-        
-        if (createdTask != null) {
+        var result = _taskService.CreateTask(taskViewModel);
+
+        if (result.IsSuccess)
+        {
             return RedirectToAction(nameof(Index));
         }
-        else
-        {
-            ModelState.AddModelError("", "Failed to create task.");
-        }
-        return Json(new { success = false, message = "Failed to create category." });
-    }
-    
 
-// POST: Task/Edit/5
+        ModelState.AddModelError("", result.Message);
+        return Json(new { success = false, message = result.Message });
+    }
+
     [HttpPost]
-    public IActionResult Edit(int id, TaskViewModel taskViewModel)
+    public IActionResult Edit(TaskViewModel taskViewModel)
     {
-        if (id != taskViewModel.TaskId)
+        if (taskViewModel.TaskId == 0)
         {
             return BadRequest();
         }
 
-        if (ModelState.IsValid)
-        {
-            var updated = _taskService.UpdateTask(id, taskViewModel);
-            if (!updated)
-            {
-                return NotFound();
-            }
 
+        var result = _taskService.UpdateTask(taskViewModel.TaskId, taskViewModel);
+        if (result.IsSuccess && result.Data != null)
+        {
+            result.Data.AllCategories = _categoryService.GetAllCategories();
             return RedirectToAction(nameof(Index));
         }
 
-        ViewBag.Categories = _categoryService.GetAllCategories();
-        return View(taskViewModel);
+        ModelState.AddModelError("", result.Message);
+
+        taskViewModel.AllCategories = _categoryService.GetAllCategories();
+        return Json(taskViewModel);
     }
 
-// GET: Task/Delete/5
     public IActionResult Delete(int id)
     {
-        var task = _taskService.GetTaskById(id);
-        if (task == null)
+        var result = _taskService.GetTaskById(id);
+        if (!result.IsSuccess || result.Data == null)
         {
             return NotFound();
         }
 
-        return View(task);
+        return View(result.Data);
     }
 
-// POST: Task/Delete/5  
     [HttpPost, ActionName("Delete")]
     public IActionResult DeleteConfirmed(int id)
     {
-        var deleted = _taskService.DeleteTask(id);
-        if (!deleted)
+        var result = _taskService.DeleteTask(id);
+        if (!result.IsSuccess || result.Data == false)
         {
             return NotFound();
         }

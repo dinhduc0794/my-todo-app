@@ -258,6 +258,8 @@ input[type="checkbox"] {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+
+
 .btn-warning {
     background-color: #ffca2c;
     color: #333;
@@ -316,5 +318,122 @@ input[type="checkbox"] {
 
     .navbar-nav .nav-link {
         padding: 10px;
+    }
+}
+
+.btn.btn-app.btn-primary.btn-sm {
+    padding: 12px 20px;
+    font-size: 1rem;
+    background-color: #007bff;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s ease;
+    position: absolute;
+    top: -60px;
+    right: 0;
+    z-index: 1050;
+}
+
+.btn.btn-app.btn-primary.btn-sm:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Form Inputs và Dropdown rộng toàn cột */
+form#form-task .form-group .form-control {
+    width: 100% !important;
+    max-width: none;
+    box-sizing: border-box;
+}
+
+/* Dropdown rộng hơn để không bị che chữ */
+form#form-task select.form-control {
+    min-width: 100%;
+    padding-right: 32px; /* phòng trường hợp có scrollbar */
+}
+
+/* Đảm bảo input datetime-local trông đồng bộ */
+form#form-task input[type="datetime-local"] {
+    width: 100% !important;
+}
+
+/* Căn chỉnh lại lề giữa label và input */
+form#form-task .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+form#form-task .form-group label {
+    flex: 0 0 25%;
+    max-width: 25%;
+    font-weight: 500;
+}
+
+form#form-task .form-group .col-xs-9 {
+    flex: 1;
+    max-width: 75%;
+}
+
+    /* Add Task Button Styling */
+.btn-add-task {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    margin-left: 16px;
+    margin-bottom: -12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background-color: #36bf76; /* Matches your theme */
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    text-transform: none;
+}
+
+.btn-add-task:hover {
+    background-color: #28a745;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    color: #fff;
+}
+
+.btn-add-task:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-add-task i {
+    margin-right: 8px;
+    font-size: 1.3rem;
+}
+
+/* Container for the button */
+.add-task-container {
+    position: relative;
+    z-index: 10; /* Ensure it stays above other elements */
+}
+
+
+/* Clearfix to prevent layout issues */
+.add-task-container::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .btn-add-task {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+    .add-task-container {
+        float: none !important; /* Remove pull-right on small screens */
+        text-align: center; /* Center button on small screens */
     }
 }

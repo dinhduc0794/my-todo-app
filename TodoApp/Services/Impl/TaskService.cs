@@ -18,10 +18,11 @@ public class TaskService : ITaskService
         _categoryRepository = categoryRepository;
     }
 
-    public List<TaskViewModel> GetAllTasks()
+    public ResultViewModel<List<TaskViewModel>> GetAllTasks()
     {
         var tasks = _taskRepository.GetAllTasks();
-        return tasks.Select(t => new TaskViewModel
+
+        var result = tasks.Select(t => new TaskViewModel
         {
             TaskId = t.TaskId,
             Title = t.Title,
@@ -47,17 +48,19 @@ public class TaskService : ITaskService
                 }
                 : null
         }).ToList();
+
+        return ResultViewModel<List<TaskViewModel>>.Success(result, "Retrieved all tasks successfully");
     }
 
-    public TaskViewModel GetTaskById(int id)
+    public ResultViewModel<TaskViewModel> GetTaskById(int id)
     {
         var task = _taskRepository.GetTaskById(id);
         if (task == null)
         {
-            return null;
+            return ResultViewModel<TaskViewModel>.Failure("Task not found");
         }
 
-        return new TaskViewModel
+        var taskViewModel = new TaskViewModel
         {
             TaskId = task.TaskId,
             Title = task.Title,
@@ -83,9 +86,11 @@ public class TaskService : ITaskService
                 }
                 : null
         };
+
+        return ResultViewModel<TaskViewModel>.Success(taskViewModel, "Task retrieved successfully");
     }
 
-    public TaskViewModel CreateTask(TaskViewModel taskViewModel)
+    public ResultViewModel<TaskViewModel> CreateTask(TaskViewModel taskViewModel)
     {
         var task = new Task
         {
@@ -107,14 +112,20 @@ public class TaskService : ITaskService
         taskViewModel.IsActive = task.IsActive;
         taskViewModel.IsDeleted = task.IsDeleted;
 
-        return taskViewModel;
+        return ResultViewModel<TaskViewModel>.Success(taskViewModel, "Task created successfully");
     }
 
-    public bool UpdateTask(int id, TaskViewModel taskViewModel)
+    public ResultViewModel<TaskViewModel> UpdateTask(int id, TaskViewModel taskViewModel)
     {
         if (id != taskViewModel.TaskId)
         {
-            return false;
+            return ResultViewModel<TaskViewModel>.Failure("Task ID mismatch");
+        }
+
+        var existing = _taskRepository.GetTaskById(id);
+        if (existing == null)
+        {
+            return ResultViewModel<TaskViewModel>.Failure("Task not found");
         }
 
         var task = new Task
@@ -127,22 +138,34 @@ public class TaskService : ITaskService
             CategoryId = taskViewModel.CategoryId,
             Priority = taskViewModel.Priority,
             CreatedAt = taskViewModel.CreatedAt,
+            UpdatedAt = DateTime.UtcNow,
             IsActive = taskViewModel.IsActive,
             IsDeleted = taskViewModel.IsDeleted
         };
 
-        return _taskRepository.UpdateTask(task);
+        _taskRepository.UpdateTask(task);
+
+        taskViewModel.UpdatedAt = task.UpdatedAt;
+
+        return ResultViewModel<TaskViewModel>.Success(taskViewModel, "Task updated successfully");
     }
 
-    public bool DeleteTask(int id)
+    public ResultViewModel<bool> DeleteTask(int id)
     {
-        return _taskRepository.DeleteTask(id);
+        var success = _taskRepository.DeleteTask(id);
+        if (!success)
+        {
+            return ResultViewModel<bool>.Failure("Failed to delete task");
+        }
+
+        return ResultViewModel<bool>.Success(true, "Task deleted successfully");
     }
 
-    public List<CategoryViewModel> GetAllCategories()
+    public ResultViewModel<List<CategoryViewModel>> GetAllCategories()
     {
         var categories = _categoryRepository.GetAllCategories();
-        return categories.Select(c => new CategoryViewModel
+
+        var result = categories.Select(c => new CategoryViewModel
         {
             CategoryId = c.CategoryId,
             Name = c.Name,
@@ -152,5 +175,7 @@ public class TaskService : ITaskService
             IsActive = c.IsActive,
             IsDeleted = c.IsDeleted
         }).ToList();
+
+        return ResultViewModel<List<CategoryViewModel>>.Success(result, "Retrieved all categories successfully");
     }
 }

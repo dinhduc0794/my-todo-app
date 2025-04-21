@@ -72,16 +72,16 @@ public class CategoryController : Controller
 
     
     [HttpPost]
-    public IActionResult Edit(int id, CategoryViewModel categoryViewModel)
-    {
-        if (id != categoryViewModel.CategoryId)
+    public IActionResult Edit(CategoryViewModel categoryViewModel)
+    {  
+        if (categoryViewModel.CategoryId == 0)
         {
             return BadRequest();
         }
-
+        
         if (ModelState.IsValid)
         {
-            var updated = _categoryService.UpdateCategory(id, categoryViewModel);
+            var updated = _categoryService.UpdateCategory(categoryViewModel.CategoryId, categoryViewModel);
             if (!updated)
             {
                 return NotFound();
@@ -90,7 +90,7 @@ public class CategoryController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        return View(categoryViewModel);
+        return Json(categoryViewModel);
     }
 
 
@@ -118,22 +118,5 @@ public class CategoryController : Controller
 
         return RedirectToAction(nameof(Index));
     }
-
-    // // POST: Category/GetAll
-    // [HttpPost]
-    // public IActionResult GetAll(string keyword = "")
-    // {
-    //     var categories = _categoryService.GetAllCategories()
-    //         .Where(c => string.IsNullOrEmpty(keyword) || c.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase))
-    //         .Select(c => new
-    //         {
-    //             CategoryId = c.CategoryId,
-    //             Name = c.Name,
-    //             Description = c.Description,
-    //             CreatedAt = c.CreatedAt
-    //         })
-    //         .ToList();
-    //
-    //     return Json(new { data = categories });
-    // }
+    
 }

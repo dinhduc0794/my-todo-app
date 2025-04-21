@@ -5,9 +5,9 @@ namespace TodoApp.Services;
 
 public interface ITaskService
 {
-    List<TaskViewModel> GetAllTasks();
-    TaskViewModel GetTaskById(int id);
-    TaskViewModel CreateTask(TaskViewModel taskViewModel);
-    bool UpdateTask(int id, TaskViewModel taskViewModel);
-    bool DeleteTask(int id);
-}   
+    ResultViewModel<List<TaskViewModel>> GetAllTasks();
+    ResultViewModel<TaskViewModel> GetTaskById(int id);
+    ResultViewModel<TaskViewModel> CreateTask(TaskViewModel taskViewModel);
+    ResultViewModel<TaskViewModel> UpdateTask(int id, TaskViewModel taskViewModel);
+    ResultViewModel<bool> DeleteTask(int id);
+}

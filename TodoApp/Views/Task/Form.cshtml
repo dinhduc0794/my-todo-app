@@ -1,8 +1,8 @@
 ﻿@model TodoApp.ViewModels.TaskViewModel
 @{
-    var isEdit = Model.IsEdit;
-    ViewData["Title"] = isEdit == false ? "Thêm danh mục" : "Chỉnh sửa danh mục";
-    var action = isEdit == false ? "Create" : "Edit";
+    var isEdit = Model.TaskId != 0;
+    ViewData["Title"] = isEdit ? "Chỉnh sửa công việc" : "Thêm công việc";
+    var action = isEdit ? "Edit" : "Create";
 }
 
 <div class="main-content">
@@ -27,11 +27,11 @@
 
             <div class="row">
                 <div class="col-xs-12">
-                    <form asp-controller="Task" asp-action="@(isEdit ? "Edit" : "Create")" method="post" id="form-task">
+                    <form asp-action="@action" method="post" id="form-task">
                         @if (isEdit)
                         {
                             <input type="hidden" asp-for="TaskId" />
-                            <input type="hidden" name="id" value="@Model.TaskId" />
+                            @* <input type="hidden" name="id" value="@Model.TaskId" /> *@
                         }
                         <div class="form-group">
                             <label class="col-xs-3">Tiêu đề</label>
@@ -61,8 +61,10 @@
                         <div class="form-group">
                             <label class="col-xs-3">Trạng thái</label>
                             <div class="col-xs-9">
-                                <input type="checkbox" asp-for="IsCompleted" class="form-check-input" />
-                                <label class="form-check-label">Hoàn thành</label>
+                                <div class="form-check">
+                                    <input type="checkbox" asp-for="IsCompleted" class="form-check-input" id="IsCompleted" />
+                                    <label class="form-check-label" for="IsCompleted">Hoàn thành</label>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -94,17 +96,16 @@
                         <div class="form-group" style="margin-top: 48px;">
                             <label class="col-xs-3"></label>
                             <div class="col-xs-9">
-                                <button type="submit" class="btn btn-primary">@(isEdit ? "Lưu thay đổi" : "Thêm công việc")</button>
-                                <a asp-action="Index" class="btn btn-warning">Hủy thao tác</a>
+                                <button type="submit" class="btn btn-primary">
+                                    @(isEdit ? "Lưu thay đổi" : "Thêm công việc")
+                                </button>
+                                <a asp-action="Index" class="btn btn-warning">Quay lại</a>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
-        </div>
+        </div>  
     </div>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

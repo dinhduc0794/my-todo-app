@@ -46,15 +46,15 @@ public class TaskRepository : ITaskRepository
     }
     
 // UPDATE tasks
-// SET Title = @Title, Description = @Description, IsCompleted = @IsCompleted, DueDate = @DueDate,
-//     CategoryId = @CategoryId, Priority = @Priority, UpdatedAt = @UpdatedAt
-// WHERE TaskId = @TaskId AND IsDeleted = 0
-    public bool UpdateTask(Task task)
+    // SET Title = @Title, Description = @Description, IsCompleted = @IsCompleted,
+    //     DueDate = @DueDate, CategoryId = @CategoryId, Priority = @Priority, UpdatedAt = @UpdatedAt
+    // WHERE TaskId = @TaskId AND IsDeleted = 0
+    public void UpdateTask(Task task)
     {
         var existingTask = _context.tasks.Find(task.TaskId);
         if (existingTask == null || existingTask.IsDeleted)
         {
-            return false;
+            throw new ArgumentException("Invalid task id");
         }
 
         existingTask.Title = task.Title;
@@ -65,15 +65,7 @@ public class TaskRepository : ITaskRepository
         existingTask.Priority = task.Priority;
         existingTask.UpdatedAt = DateTime.UtcNow;
 
-        try
-        {
-            _context.SaveChanges();
-            return true;
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            return false;
-        }
+        _context.SaveChanges();
     }
 
     
