@@ -21,7 +21,7 @@ public class TaskController : Controller
         if (!result.IsSuccess)
         {
             ViewBag.ErrorMessage = result.Message;
-            return View();
+            return View(new TaskViewModel());
         }
 
         var viewModel = new TaskViewModel
@@ -68,7 +68,16 @@ public class TaskController : Controller
             viewModel = result.Data;
         }
 
-        viewModel.AllCategories = _categoryService.GetAllCategories();
+        var categoryResult = _categoryService.GetAllCategories();
+        if (categoryResult.IsSuccess)
+        {
+            viewModel.AllCategories = categoryResult.Data;
+        }
+        else
+        {
+            ModelState.AddModelError("", categoryResult.Message);
+        }
+
         return View(viewModel);
     }
 
@@ -76,13 +85,12 @@ public class TaskController : Controller
     public IActionResult Create(TaskViewModel taskViewModel)
     {
         var result = _taskService.CreateTask(taskViewModel);
-
         if (result.IsSuccess)
         {
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError("", result.Message);
+        taskViewModel.AllCategories = _categoryService.GetAllCategories().Data;
         return Json(new { success = false, message = result.Message });
     }
 
@@ -94,18 +102,14 @@ public class TaskController : Controller
             return BadRequest();
         }
 
-
         var result = _taskService.UpdateTask(taskViewModel.TaskId, taskViewModel);
         if (result.IsSuccess && result.Data != null)
         {
-            result.Data.AllCategories = _categoryService.GetAllCategories();
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError("", result.Message);
-
-        taskViewModel.AllCategories = _categoryService.GetAllCategories();
-        return Json(taskViewModel);
+        taskViewModel.AllCategories = _categoryService.GetAllCategories().Data;
+        return Json(new { success = false, message = result.Message });
     }
 
     public IActionResult Delete(int id)

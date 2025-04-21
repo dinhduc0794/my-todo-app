@@ -49,7 +49,7 @@ public class TaskService : ITaskService
                 : null
         }).ToList();
 
-        return ResultViewModel<List<TaskViewModel>>.Success(result, "Retrieved all tasks successfully");
+        return ResultViewModel<List<TaskViewModel>>.Success(result, "Lấy danh sách công việc thành công");
     }
 
     public ResultViewModel<TaskViewModel> GetTaskById(int id)
@@ -57,7 +57,7 @@ public class TaskService : ITaskService
         var task = _taskRepository.GetTaskById(id);
         if (task == null)
         {
-            return ResultViewModel<TaskViewModel>.Failure("Task not found");
+            return ResultViewModel<TaskViewModel>.Failure("Không tìm thấy công việc");
         }
 
         var taskViewModel = new TaskViewModel
@@ -87,7 +87,7 @@ public class TaskService : ITaskService
                 : null
         };
 
-        return ResultViewModel<TaskViewModel>.Success(taskViewModel, "Task retrieved successfully");
+        return ResultViewModel<TaskViewModel>.Success(taskViewModel, "Lấy danh sách công việc thành công");
     }
 
     public ResultViewModel<TaskViewModel> CreateTask(TaskViewModel taskViewModel)
@@ -112,20 +112,20 @@ public class TaskService : ITaskService
         taskViewModel.IsActive = task.IsActive;
         taskViewModel.IsDeleted = task.IsDeleted;
 
-        return ResultViewModel<TaskViewModel>.Success(taskViewModel, "Task created successfully");
+        return ResultViewModel<TaskViewModel>.Success(taskViewModel, "Tạo mới công việc thành công");
     }
 
     public ResultViewModel<TaskViewModel> UpdateTask(int id, TaskViewModel taskViewModel)
     {
         if (id != taskViewModel.TaskId)
         {
-            return ResultViewModel<TaskViewModel>.Failure("Task ID mismatch");
+            return ResultViewModel<TaskViewModel>.Failure("ID không hợp lệ");
         }
 
         var existing = _taskRepository.GetTaskById(id);
         if (existing == null)
         {
-            return ResultViewModel<TaskViewModel>.Failure("Task not found");
+            return ResultViewModel<TaskViewModel>.Failure("Không tìm thấy công việc");
         }
 
         var task = new Task
@@ -147,7 +147,7 @@ public class TaskService : ITaskService
 
         taskViewModel.UpdatedAt = task.UpdatedAt;
 
-        return ResultViewModel<TaskViewModel>.Success(taskViewModel, "Task updated successfully");
+        return ResultViewModel<TaskViewModel>.Success(taskViewModel, "Cập nhật công việc thành công");
     }
 
     public ResultViewModel<bool> DeleteTask(int id)
@@ -155,27 +155,10 @@ public class TaskService : ITaskService
         var success = _taskRepository.DeleteTask(id);
         if (!success)
         {
-            return ResultViewModel<bool>.Failure("Failed to delete task");
+            return ResultViewModel<bool>.Failure("Xóa công việc thất bại");
         }
 
-        return ResultViewModel<bool>.Success(true, "Task deleted successfully");
+        return ResultViewModel<bool>.Success(true, "Xóa công việc thành công");
     }
 
-    public ResultViewModel<List<CategoryViewModel>> GetAllCategories()
-    {
-        var categories = _categoryRepository.GetAllCategories();
-
-        var result = categories.Select(c => new CategoryViewModel
-        {
-            CategoryId = c.CategoryId,
-            Name = c.Name,
-            Description = c.Description,
-            CreatedAt = c.CreatedAt,
-            UpdatedAt = c.UpdatedAt,
-            IsActive = c.IsActive,
-            IsDeleted = c.IsDeleted
-        }).ToList();
-
-        return ResultViewModel<List<CategoryViewModel>>.Success(result, "Retrieved all categories successfully");
-    }
 }

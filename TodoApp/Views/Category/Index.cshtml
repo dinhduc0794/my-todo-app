@@ -37,14 +37,11 @@
                 <table id="categoryList" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th class="center">
-                            <input type="checkbox" id="checkAll" class="check-box-element">
-                        </th>
-                        <th class="center">Tên danh mục</th>
-                        <th class="center">Mô tả</th>
-                        <th class="center">Ngày tạo</th>
-                        <th class="center">Ngày sửa</th>
-                        <th class="center">Thao tác</th>
+                        <th class="text-center">Tên danh mục</th>
+                        <th class="text-center">Mô tả</th>
+                        <th class="text-center">Ngày tạo</th>
+                        <th class="text-center">Ngày sửa</th>
+                        <th class="text-center">Thao tác</th>
                     </tr>
                     </thead>
                     <tbody></tbody>
@@ -92,13 +89,6 @@
                 "paging": false,
                 "columns": [
                     {
-                        "data": "categoryId",
-                        "render": function (data, type, row) {
-                            return `<input type="checkbox" class="check-box-element" id="selected-${data}" data-id="${data}" />`;
-                        },
-                        "className": "center"
-                    },
-                    {
                         "data": "name",
                         "render": function (data, type, row) {
                             return data || "N/A";
@@ -140,11 +130,6 @@
                         "className": "center"
                     }
                 ]
-            });
-
-            // Check all checkboxes
-            $("#checkAll").on("change", function () {
-                $("#categoryList tbody input[type='checkbox']").prop("checked", this.checked);
             });
 
             // Delete single category

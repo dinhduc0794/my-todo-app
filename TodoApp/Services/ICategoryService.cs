@@ -4,9 +4,9 @@ namespace TodoApp.Services;
 
 public interface ICategoryService
 {
-    List<CategoryViewModel> GetAllCategories();
-    CategoryViewModel GetCategoryById(int id);
-    CategoryViewModel CreateCategory(CategoryViewModel categoryViewModel);
-    bool UpdateCategory(int id, CategoryViewModel categoryViewModel);
-    bool DeleteCategory(int id);
+    ResultViewModel<List<CategoryViewModel>> GetAllCategories();
+    ResultViewModel<CategoryViewModel> GetCategoryById(int id);
+    ResultViewModel<CategoryViewModel> CreateCategory(CategoryViewModel categoryViewModel);
+    ResultViewModel<CategoryViewModel> UpdateCategory(int id, CategoryViewModel categoryViewModel);
+    ResultViewModel<bool> DeleteCategory(int id);
 }
